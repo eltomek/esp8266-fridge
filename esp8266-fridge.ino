@@ -1,6 +1,5 @@
 #include <ArduinoJson.h>
 #include <DallasTemperature.h>
-#include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <FS.h>
@@ -61,9 +60,12 @@ DallasTemperature sensors(&oneWire);
 
 const String htmlHeader = "<!doctype html>\n" \
   "<html lang='pl_PL'>\n" \
+  "<head>\n" \
   "<meta charset='utf-8'>\n" \
   "<meta name='viewport' content='width=device-width, initial-scale=1'/>\n" \
-  "<style>body {font-family: Sans;}</style>\n";
+  "<title>esp8266-fridge</title>\n" \
+  "<style>body {font-family: Sans;}</style>\n"
+  "</head>\n";
 
 const String htmlFooter = "</html>\n";
 
@@ -285,11 +287,11 @@ void handleRoot() {
     html += "<label><input type='radio' name='mode' value='" + String(i) + "' " + (i == config.mode ? "checked" : "") + "/> " + Modes.at(i) + "</label>&nbsp;\n";
   }
   html += "<br/>Temperature: \n";
-  html += "<input name='temp' value='" + String(config.temperature) + "' size=3/> (" + String(RANGE_TEMP_MIN) + " - " + String(RANGE_TEMP_MAX) + ")<br/>\n";
-  html += "Hysteresis: <input name='hyst' value='" + String(config.hysteresis) + "' size=3/> (" + String(RANGE_HYST_MIN) + " - " + String(RANGE_HYST_MAX) + ")<br/>\n";
-  html += "Interval: <input name='interval' value='" + String(config.interval) + "' size=3/> (" + String(RANGE_INTERVAL_MIN) + " - " + String(RANGE_INTERVAL_MAX) + ")<br/>\n";
+  html += "<input name='temp' value='" + String(config.temperature) + "' size=3/>&deg;C (" + String(RANGE_TEMP_MIN) + " - " + String(RANGE_TEMP_MAX) + "&deg;C)<br/>\n";
+  html += "Hysteresis: <input name='hyst' value='" + String(config.hysteresis) + "' size=3/>&deg;C (" + String(RANGE_HYST_MIN) + " - " + String(RANGE_HYST_MAX) + "&deg;C)<br/>\n";
+  html += "Interval: <input name='interval' value='" + String(config.interval) + "' size=3/> min (" + String(RANGE_INTERVAL_MIN) + " - " + String(RANGE_INTERVAL_MAX) + ") min<br/>\n";
   html += "<input type='submit' value=OK></form>\n";
-  html += "<p>Current temp: " + String(sensors.getTempCByIndex(0)) + "</p>\n";
+  html += "<p>Current temp: " + String(sensors.getTempCByIndex(0)) + "&deg;C</p>\n";
   html += "<p>Cooling pin state: " + String(digitalRead(PIN_RELAY)) + "</p>\n";
   html += "<p><a href='/config.html'>config &raquo;</p>\n";
   html += "</body>\n";

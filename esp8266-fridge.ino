@@ -35,7 +35,7 @@ struct Config {
 #define DEFAULT_HYST        0.5
 #define DEFAULT_INTERVAL    1
 
-const std::vector<String> Modes = {"OFF", "ON", "AUTO"};
+const std::vector<String> Modes = {"OFF", "ON", "AUTO_COOL", "AUTO_HEAT"};
 
 #define LOOP_PERIOD_MS  1000 // 1 sec
 
@@ -59,7 +59,7 @@ OneWire oneWire(PIN_DS18B20);
 DallasTemperature sensors(&oneWire);
 
 const String htmlHeader = "<!doctype html>\n" \
-  "<html lang='pl_PL'>\n" \
+  "<html lang='en'>\n" \
   "<head>\n" \
   "<meta charset='utf-8'>\n" \
   "<meta name='viewport' content='width=device-width, initial-scale=1'/>\n" \
@@ -72,7 +72,7 @@ const String htmlFooter = "</html>\n";
 void setup() {
   Serial.begin(115200);
   while (!Serial) continue;
-  
+
   digitalWrite(PIN_DS18B20, LOW);
   pinMode(PIN_DS18B20, OUTPUT);
 
@@ -127,7 +127,7 @@ void loadConfiguration(const String filename, Config &config) {
   StaticJsonDocument<256> doc;
   
   DeserializationError error = deserializeJson(doc, file);
-  
+
   if (error)
     Serial.println(F("Failed to read config file"));
 
@@ -289,10 +289,11 @@ void handleRoot() {
   html += "<br/>Temperature: \n";
   html += "<input name='temp' value='" + String(config.temperature) + "' size=3/>&deg;C (" + String(RANGE_TEMP_MIN) + " - " + String(RANGE_TEMP_MAX) + "&deg;C)<br/>\n";
   html += "Hysteresis: <input name='hyst' value='" + String(config.hysteresis) + "' size=3/>&deg;C (" + String(RANGE_HYST_MIN) + " - " + String(RANGE_HYST_MAX) + "&deg;C)<br/>\n";
-  html += "Interval: <input name='interval' value='" + String(config.interval) + "' size=3/> min (" + String(RANGE_INTERVAL_MIN) + " - " + String(RANGE_INTERVAL_MAX) + ") min<br/>\n";
+  html += "Interval: <input name='interval' value='" + String(config.interval) + "' size=3/> min (" + String(RANGE_INTERVAL_MIN) + " - " + String(RANGE_INTERVAL_MAX) + " min)<br/>\n";
   html += "<input type='submit' value=OK></form>\n";
   html += "<p>Current temp: " + String(sensors.getTempCByIndex(0)) + "&deg;C</p>\n";
-  html += "<p>Cooling pin state: " + String(digitalRead(PIN_RELAY)) + "</p>\n";
+  String pinState = digitalRead(PIN_RELAY) > 0 ? "ON" : "OFF";
+  html += "<p>Cooler/heater state: " + pinState + "</p>\n";
   html += "<p><a href='/config.html'>config &raquo;</p>\n";
   html += "</body>\n";
   html += htmlFooter;
@@ -325,20 +326,29 @@ void toggle() {
 
   switch (config.mode)
   {
-  case 0:
+  case 0: // permanent off
     digitalWrite(PIN_RELAY, LOW);
     break;
   
-  case 1:
+  case 1: // permanent on
     digitalWrite(PIN_RELAY, HIGH);
     break;
 
-  case 2:
+  case 2: // cooling
     if (currentTemp - config.hysteresis / 2 >= config.temperature) {
       digitalWrite(PIN_RELAY, HIGH);
     }
     else if (currentTemp + config.hysteresis / 2 <= config.temperature) {
       digitalWrite(PIN_RELAY, LOW);
+    }
+    break;
+
+  case 3: // heating
+    if (currentTemp - config.hysteresis / 2 >= config.temperature) {
+      digitalWrite(PIN_RELAY, LOW);
+    }
+    else if (currentTemp + config.hysteresis / 2 <= config.temperature) {
+      digitalWrite(PIN_RELAY, HIGH);
     }
     break;
   }

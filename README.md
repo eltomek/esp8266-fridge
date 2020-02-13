@@ -1,8 +1,14 @@
 # esp8266-fridge
 ESP8266-based simple fridge temperature controller with Web GUI
 
-This Arduino sketch for ESP8266 platform implements a simple temperature controller that drives fridge power on/off states based on temperature measured by DS18B20 digital thermometer readings and temperature/hysteresis parameters configured via a Web GUI.
+This Arduino sketch for ESP8266 platform implements a simple temperature controller that drives fridge power on/off states based on temperature measured by DS18B20 digital thermometer readings and temperature/hysteresis parameters configured via a Web GUI. The controller can be configured to work as cooler and heater.
 It uses WifiManager to connect to Wifi networks so no hardcoded credentials are stored in the source code.
+
+Basic view:
+![Basic view](https://github.com/eltomek/esp8266-fridge/blob/master/Screen1.png)
+
+ThingSpeak IoT platform is supported so you can plot temperature values like this:
+![Data plot](https://github.com/eltomek/esp8266-fridge/blob/master/Screen2.png)
 
 ## Hardware used:
 1. Wemos D1 mini board (or its clone)

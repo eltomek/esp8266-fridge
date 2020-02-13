@@ -14,18 +14,17 @@ ThingSpeak IoT platform is supported so you can plot temperature values like thi
 
 ## Hardware used:
 1. Wemos D1 mini board (or its clone)
-2. Electromagnetic 10A relay board (one can use SSR instead)
-3. DS180B20 digital thermometer
-4. AC plug, socket, AC connection cables and some case
+1. Electromagnetic 10A relay board (one can use SSR instead)
+1. DS180B20 digital thermometer
+1. AC plug, socket, AC connection cables and some case
 
 ## Software prerequisites:
 All libraries are available through Arduino IDE Library Manager
-
 1. ArduinoJson
-2. DallasTemperature
-3. OneWire
-4. ThingSpeak
-5. WifiManager
+1. DallasTemperature
+1. OneWire
+1. ThingSpeak
+1. WifiManager
 
 ## Setup instructions:
 Wemos D1 mini example:
@@ -38,3 +37,9 @@ Wemos D1 mini example:
 Use the Arduino IDE (https://www.arduino.cc/en/main/software), add esp8266 support (https://github.com/esp8266/Arduino/blob/master/README.md#installing-with- boards-manager), install the necessary libraries (https://github.com/eltomek/esp8266-fridge#software-prerequisites) using the Library Manager in the Arduino IDE.
 
 If your esp8266 board's  WiFi network has not previously been configured it will display it will enter the Access Point mode. Open the page at http://192.168.4.1 and configure the network connections (more info: https://github.com/tzapu/WiFiManager#how-it-works).
+
+## Next steps
+* rework to use html templates to save RAM (potentially use this project https://github.com/winder/ESPTemplateProcessor)
+* add support for Fahrenheit units
+* add support for linear temperature control (e.g start at 17 degrees Celsius and finish at 21 after 5 days) - might be awkward with no RTC onboard
+* add support for Ubidots IoT platform (https://ubidots.com/)

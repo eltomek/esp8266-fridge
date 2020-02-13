@@ -5,9 +5,11 @@ This Arduino sketch for ESP8266 platform implements a simple temperature control
 It uses WifiManager to connect to Wifi networks so no hardcoded credentials are stored in the source code.
 
 Basic view:
+
 ![Basic view](https://github.com/eltomek/esp8266-fridge/blob/master/Screen1.png)
 
 ThingSpeak IoT platform is supported so you can plot temperature values like this:
+
 ![Data plot](https://github.com/eltomek/esp8266-fridge/blob/master/Screen2.png)
 
 ## Hardware used:
